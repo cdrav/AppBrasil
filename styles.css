@@ -1,0 +1,158 @@
+/* Base general */
+body {
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+    font-size: 14px;
+    background-color: #e6f5d0; /* Verde claro inspirado en la bandera de Brasil */
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    height: 100%;
+    padding-top: 20px;
+    flex-direction: column;
+    min-height: 100vh;
+    color: #002776; /* Azul oscuro */
+}
+
+/* Card para contenedor de formulario */
+.card {
+    min-height: 100%;
+    width: 90%;
+    max-width: 900px;
+    margin: 20px auto;
+    border-radius: 8px;
+    padding: 20px;
+    background-color: #ffffff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    box-sizing: border-box;
+}
+
+/* Título destacado con colores de Brasil */
+.card-header {
+    padding: 15px;
+    font-size: 1.8em;
+    color: #ffffff; /* Blanco */
+    font-weight: bold;
+    background-color: #009b3a; /* Verde bandera Brasil */
+    text-align: center;
+    border-radius: 8px 8px 0 0;
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+/* Formulario flex con etiquetas visibles */
+.form-group {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 15px;
+    align-items: flex-start;
+    width: 100%;
+}
+
+.form-group label {
+    font-weight: bold;
+    color: #002776; /* Azul oscuro */
+    font-size: 1em;
+    margin-bottom: 5px;
+}
+
+/* Estilo de campos de texto y selects */
+input[type="text"], input[type="number"], select.form-control {
+    min-width: 100%;
+    max-width: 100%;
+    padding: 12px;
+    height: 45px;
+    border: 1px solid #004b87; /* Azul bandera */
+    border-radius: 5px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    box-sizing: border-box;
+    margin-bottom: 10px;
+    font-size: 1em;
+    background-color: #fef9c0; /* Amarillo bandera */
+}
+
+/* Para evitar que el texto largo se rompa */
+input[type="text"], select.form-control {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Contenedores flexibles con scroll horizontal si es necesario */
+#clientesCancelados, #renovaciones, #clientesNuevos, #gastos {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: flex-start;
+    width: 100%;
+    box-sizing: border-box;
+    overflow-x: auto;
+}
+
+/* Estilo para el scroll horizontal */
+#clientesCancelados::-webkit-scrollbar, 
+#renovaciones::-webkit-scrollbar, 
+#clientesNuevos::-webkit-scrollbar, 
+#gastos::-webkit-scrollbar {
+    height: 8px;
+}
+
+#clientesCancelados::-webkit-scrollbar-thumb, 
+#renovaciones::-webkit-scrollbar-thumb, 
+#clientesNuevos::-webkit-scrollbar-thumb, 
+#gastos::-webkit-scrollbar-thumb {
+    background-color: #ffd700; /* Amarillo bandera */
+    border-radius: 4px;
+}
+
+#clientesCancelados::-webkit-scrollbar-thumb:hover, 
+#renovaciones::-webkit-scrollbar-thumb:hover, 
+#clientesNuevos::-webkit-scrollbar-thumb:hover, 
+#gastos::-webkit-scrollbar-thumb:hover {
+    background-color: #ffcc00; /* Amarillo más oscuro */
+}
+
+/* Ajustes para pantallas pequeñas */
+@media (max-width: 768px) {
+    .card {
+        width: 95%;
+        padding: 15px;
+    }
+
+    select.form-control,
+    input.form-control {
+        font-size: 1em;
+        padding: 10px;
+    }
+
+    .form-group label {
+        font-size: 1.1em;
+    }
+}
+
+@media (max-width: 480px) {
+    .card {
+        width: 100%;
+        padding: 10px;
+    }
+
+    .form-group label {
+        font-size: 1em;
+    }
+
+    select.form-control,
+    input.form-control {
+        font-size: 0.9em;
+        padding: 8px;
+    }
+
+    #clientesCancelados, #renovaciones, #clientesNuevos, #gastos {
+        padding: 5px;
+        gap: 5px;
+        flex-wrap: wrap;
+    }
+}
