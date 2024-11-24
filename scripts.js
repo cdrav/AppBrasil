@@ -1,268 +1,183 @@
-// ---- Funciones para Generación de Campos Dinámicos ----
-
-// Generar campos para "Clientes Cancelados"
+// Función para generar campos de "Clientes Cancelados"
 function generarCamposClientesCancelados() {
-    const cantidad = parseInt(document.getElementById("clientesCanceladosInput").value) || 0;
+    const cantidad = parseInt(document.getElementById("clientesCanceladosInput")?.value) || 0;
     const contenedor = document.getElementById("clientesCancelados");
     contenedor.innerHTML = ''; // Limpiar campos anteriores
 
     for (let i = 0; i < cantidad; i++) {
-        const div = crearCampoClienteCancelado(i);
+        const div = document.createElement('div');
+        div.className = 'input-group mb-2';
+
+        const input = document.createElement('input');
+        input.type = 'text';
+        input.className = 'form-control';
+        input.placeholder = `Cliente Cancelado ${i + 1}`;
+
+        const select = document.createElement('select');
+        select.className = 'form-control ml-2';
+        ["Renovable", "Suave", "Clavo"].forEach(optionText => {
+            const option = document.createElement('option');
+            option.value = optionText;
+            option.text = optionText;
+            select.appendChild(option);
+        });
+
+        div.appendChild(input);
+        div.appendChild(select);
         contenedor.appendChild(div);
     }
 }
 
-function crearCampoClienteCancelado(index) {
-    const div = document.createElement('div');
-    div.className = 'input-group mb-2';
-
-    const input = document.createElement('input');
-    input.type = 'text';
-    input.className = 'form-control';
-    input.placeholder = `Cliente Cancelado ${index + 1}`;
-
-    const select = document.createElement('select');
-    select.className = 'form-control ml-2';
-    ["Renovable", "Suave", "Clavo"].forEach(optionText => {
-        const option = document.createElement('option');
-        option.value = optionText;
-        option.text = optionText;
-        select.appendChild(option);
-    });
-
-    div.appendChild(input);
-    div.appendChild(select);
-    return div;
-}
-
-// Generar campos para otras secciones (Clientes Nuevos, Renovaciones, Gastos)
+// Función general para generar campos en otras secciones
 function generarCampos(seccionId, labelText, montoText) {
-    const cantidad = parseInt(document.getElementById(`num${capitalize(seccionId)}`).value) || 0;
+    const cantidad = parseInt(document.getElementById(`num${capitalize(seccionId)}`)?.value) || 0;
     const contenedor = document.getElementById(seccionId);
     contenedor.innerHTML = ''; // Limpiar campos anteriores
 
     for (let i = 0; i < cantidad; i++) {
-        const div = crearCampoGenerico(labelText, montoText, i);
+        const div = document.createElement('div');
+        div.className = 'input-group mb-2';
+
+        const inputLabel = document.createElement('input');
+        inputLabel.type = 'text';
+        inputLabel.className = 'form-control';
+        inputLabel.placeholder = `${labelText} ${i + 1}`;
+
+        const inputMonto = document.createElement('input');
+        inputMonto.type = 'number';
+        inputMonto.className = 'form-control ml-2';
+        inputMonto.placeholder = `${montoText} ${i + 1}`;
+        inputMonto.oninput = actualizarTotales; // Actualiza los totales al cambiar
+
+        div.appendChild(inputLabel);
+        div.appendChild(inputMonto);
         contenedor.appendChild(div);
     }
 }
 
-function crearCampoGenerico(labelText, montoText, index) {
-    const div = document.createElement('div');
-    div.className = 'input-group mb-2';
-
-    const inputLabel = document.createElement('input');
-    inputLabel.type = 'text';
-    inputLabel.className = 'form-control';
-    inputLabel.placeholder = `${labelText} ${index + 1}`;
-
-    const inputMonto = document.createElement('input');
-    inputMonto.type = 'number';
-    inputMonto.className = 'form-control ml-2';
-    inputMonto.placeholder = `${montoText} ${index + 1}`;
-    inputMonto.oninput = actualizarTotales; // Actualiza los totales al cambiar
-
-    div.appendChild(inputLabel);
-    div.appendChild(inputMonto);
-    return div;
-}
-
-// ---- Funciones de Cálculo y Actualización ----
-
-// Actualizar los totales (Total Prestado, Gastos, etc.)
+// Función para actualizar los totales
 function actualizarTotales() {
     const totalPrestado = sumarCampos('renovaciones') + sumarCampos('clientesNuevos');
-    document.getElementById("totalPrestado").value = totalPrestado.toFixed(0);
+    document.getElementById("totalPrestado").value = totalPrestado.toFixed(2);
 
     const totalGastos = sumarCampos('gastos');
-    document.getElementById("totalGastos").value = totalGastos.toFixed(0);
+    document.getElementById("totalGastos").value = totalGastos.toFixed(2);
 
     calcularPorcentajeGestion();
-    calcularCajaRestante();
 }
 
-// Sumar los valores de los campos de una sección
+// Función para sumar los valores de los campos de una sección
 function sumarCampos(seccionId) {
     const inputs = document.querySelectorAll(`#${seccionId} input[type='number']`);
     return Array.from(inputs).reduce((sum, input) => sum + (parseFloat(input.value) || 0), 0);
 }
 
-// Calcular porcentaje de gestión
+// Función para calcular el porcentaje de gestión
 function calcularPorcentajeGestion() {
-    const totalClientes = parseInt(document.getElementById("totalClientes").value) || 0;
-    const clientesGestionados = parseInt(document.getElementById("clientesGestionados").value) || 0;
+    const totalClientes = parseInt(document.getElementById("totalClientes")?.value) || 0;
+    const clientesGestionados = parseInt(document.getElementById("clientesGestionados")?.value) || 0;
 
     const porcentajeGestion = totalClientes ? (clientesGestionados / totalClientes) * 100 : 0;
     document.getElementById("porcentajeGestion").value = porcentajeGestion.toFixed(2);
 }
 
-// Calcular caja restante
-function calcularCajaRestante() {
-    const totalCaja = parseFloat(document.getElementById('totalCaja').value) || 0;
-    const totalGastos = parseFloat(document.getElementById('totalGastos').value) || 0;
-    const cajaRestante = totalCaja - totalGastos;
-
-    document.getElementById('cajaRestante').value = cajaRestante.toFixed(0);
-}
-
-// Capitalizar la primera letra de una cadena
+// Función para capitalizar la primera letra de una cadena
 function capitalize(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
-function generarPDF() {
-    // Obtener los valores de los campos de entrada
-    const totalCaja = document.getElementById('totalCaja').value;
-    const cajaRestante = document.getElementById('cajaRestante').value;
-    const clientesCancelados = document.getElementById('clientesCanceladosInput').value;
-    const clientesNuevos = document.getElementById('numClientesNuevos').value;
-    const renovaciones = document.getElementById('numRenovaciones').value;
-    const totalPrestado = document.getElementById('totalPrestado').value;
-    const numGastos = document.getElementById('numGastos').value;
-    const totalGastos = document.getElementById('totalGastos').value;
-    const totalClientes = document.getElementById('totalClientes').value;
-    const clientesGestionados = document.getElementById('clientesGestionados').value;
-    const porcentajeGestion = document.getElementById('porcentajeGestion').value;
-    const totalRecaudado = document.getElementById('totalRecaudado').value;
+// Función para generar el PDF
+async function generarPDF() {
+    try {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF({
+            orientation: 'portrait',
+            unit: 'px',
+            format: 'a4'
+        });
 
-    // Verificar si todos los campos tienen valores válidos
-    if (!totalCaja || !clientesCancelados || !clientesNuevos || !renovaciones || !totalPrestado || !totalGastos || !totalClientes || !clientesGestionados || !porcentajeGestion || !totalRecaudado) {
-        alert('Por favor, complete todos los campos antes de generar el reporte.');
-        return;
+        const pageWidth = doc.internal.pageSize.getWidth();
+        let currentY = 30;
+
+        // Título
+        doc.setFontSize(18);
+        doc.setFont('helvetica', 'bold');
+        doc.text("Reporte Diario de Ruta", pageWidth / 2, currentY, { align: 'center' });
+        currentY += 20;
+
+        // Línea de separación
+        doc.line(20, currentY, pageWidth - 20, currentY);
+        currentY += 20;
+
+        // Tabla de datos generales
+        const datosGenerales = [
+            ["Clientes Cancelados", document.getElementById('clientesCanceladosInput')?.value || '0'],
+            ["Clientes Nuevos", document.getElementById('numClientesNuevos')?.value || '0'],
+            ["Número de Renovaciones", document.getElementById('numRenovaciones')?.value || '0'],
+            ["Total Prestado en la Ruta", `$${document.getElementById('totalPrestado')?.value || '0.00'}`],
+            ["Total Gastos", `$${document.getElementById('totalGastos')?.value || '0.00'}`],
+            ["Total Clientes", document.getElementById('totalClientes')?.value || '0'],
+            ["Clientes Gestionados", document.getElementById('clientesGestionados')?.value || '0'],
+            ["Porcentaje de Gestión", `${document.getElementById('porcentajeGestion')?.value || '0.00'}%`],
+            ["Total Recaudado", `$${document.getElementById('totalRecaudado')?.value || '0.00'}`],
+            ["Totalidad de la Caja en la Ruta", `$${document.getElementById('totalCajaRuta')?.value || '0.00'}`]
+        ];
+
+        doc.autoTable({
+            startY: currentY,
+            head: [['Detalle', 'Valor']],
+            body: datosGenerales,
+            theme: 'grid',
+            margin: { left: 20, right: 20 }
+        });
+
+        currentY = doc.previousAutoTable.finalY + 20;
+
+        // Detalles adicionales
+        agregarDetallesPDF(doc, 'clientesCancelados', 'Cancelaciones', ['#', 'Cliente', 'Observación']);
+        agregarDetallesPDF(doc, 'clientesNuevos', 'Clientes Nuevos', ['#', 'Cliente', 'Monto']);
+        agregarDetallesPDF(doc, 'renovaciones', 'Renovaciones', ['#', 'Descripción', 'Monto']);
+        agregarDetallesPDF(doc, 'gastos', 'Gastos', ['#', 'Descripción', 'Monto']);
+
+        // Descargar PDF
+        doc.save('reporte_diario_ruta.pdf');
+    } catch (error) {
+        console.error("Error al generar el PDF:", error);
     }
+}
 
-    // Crear el documento PDF
-    const { jsPDF } = window.jspdf;
-    const doc = new jsPDF();
+// Función para agregar detalles al PDF
+function agregarDetallesPDF(doc, seccionId, titulo, encabezados) {
+    const pageWidth = doc.internal.pageSize.getWidth();
+    let currentY = doc.previousAutoTable.finalY + 20;
 
-    // Iniciar la posición Y para la primera tabla
-    let startY = 10;
+    // Título de la sección
+    doc.setFontSize(14);
+    doc.setFont('helvetica', 'bold');
+    doc.text(`Detalles de ${titulo}`, pageWidth / 2, currentY, { align: 'center' });
+    currentY += 10;
 
-    // Detalles generales
-    const detalles = [
-        ['Total Caja Inicial', totalCaja],
-        ['Caja Restante', cajaRestante],
-        ['Clientes Cancelados', clientesCancelados],
-        ['Clientes Nuevos', clientesNuevos],
-        ['Renovaciones', renovaciones],
-        ['Total Prestado', totalPrestado],
-        ['Número de Gastos', numGastos],
-        ['Total Gastos', totalGastos],
-        ['Total de Clientes', totalClientes],
-        ['Clientes Gestionados', clientesGestionados],
-        ['Porcentaje de Gestión', porcentajeGestion],
-        ['Total Recaudado', totalRecaudado]
-    ];
+    // Recopilar datos de la sección
+    const datos = Array.from(document.querySelectorAll(`#${seccionId} .input-group`)).map((grupo, i) => {
+        const texto1 = grupo.querySelector('input[type="text"]')?.value || 'N/A'; // Cliente o descripción
+        const texto2 = grupo.querySelector('input[type="number"]')?.value || '';  // Monto
+        const texto3 = grupo.querySelector('select')?.value || '';                // Observación
 
-    // Agregar la tabla general
-    doc.autoTable({
-        head: [['Concepto', 'Valor']],
-        body: detalles,
-        startY: startY,
-        theme: 'grid',
-        didDrawPage: function (data) {
-            startY = data.cursor.y + 5;  // Ajustar la posición Y después de la tabla
+        // Si es un formulario con "Observación", incluirla en lugar del monto
+        if (texto3) {
+            return [i + 1, texto1, texto3];
         }
+
+        // Si no hay select, incluir el monto
+        return [i + 1, texto1, texto2 || '0.00'];
     });
 
-    // ** Título para Clientes Cancelados **
-    doc.setFontSize(12);
-    doc.text('Clientes Cancelados:', 10, startY + 10);
-    startY += 15; // Ajustar la posición después del título
-
-    // Detalles de clientes cancelados
-    const detallesCancelados = [];
-    const canceladosInputs = document.querySelectorAll('#clientesCancelados input');
-    canceladosInputs.forEach((input, index) => {
-        const select = input.nextElementSibling; // El select que está al lado del input
-        const selectedOption = select.options[select.selectedIndex].text;
-        detallesCancelados.push([`Cliente Cancelado ${index + 1}`, input.value, selectedOption]);
+    // Generar tabla
+    doc.autoTable({
+        startY: currentY,
+        head: [encabezados],
+        body: datos,
+        theme: 'striped',
+        margin: { left: 20, right: 20 }
     });
-
-    if (detallesCancelados.length > 0) {
-        doc.autoTable({
-            head: [['Cliente', 'Valor', 'Estado']],
-            body: detallesCancelados,
-            startY: startY,
-            theme: 'grid',
-            didDrawPage: function (data) {
-                startY = data.cursor.y + 5;  // Ajustar la posición Y después de la tabla
-            }
-        });
-    }
-
-    // ** Título para Clientes Nuevos **
-    doc.setFontSize(12);
-    doc.text('Clientes Nuevos:', 10, startY + 10);
-    startY += 15; // Ajustar la posición después del título
-
-    // Detalles de clientes nuevos
-    const detallesNuevos = [];
-    const nuevosInputs = document.querySelectorAll('#clientesNuevos input');
-    nuevosInputs.forEach((input, index) => {
-        detallesNuevos.push([`Cliente Nuevo ${index + 1}`, input.value]);
-    });
-
-    if (detallesNuevos.length > 0) {
-        doc.autoTable({
-            head: [['Cliente', 'Valor']],
-            body: detallesNuevos,
-            startY: startY,
-            theme: 'grid',
-            didDrawPage: function (data) {
-                startY = data.cursor.y + 5;  // Ajustar la posición Y después de la tabla
-            }
-        });
-    }
-
-    // ** Título para Renovaciones **
-    doc.setFontSize(12);
-    doc.text('Renovaciones:', 10, startY + 10);
-    startY += 15; // Ajustar la posición después del título
-
-    // Detalles de renovaciones
-    const detallesRenovaciones = [];
-    const renovacionesInputs = document.querySelectorAll('#renovaciones input');
-    renovacionesInputs.forEach((input, index) => {
-        detallesRenovaciones.push([`Renovación ${index + 1}`, input.value]);
-    });
-
-    if (detallesRenovaciones.length > 0) {
-        doc.autoTable({
-            head: [['Renovación', 'Valor']],
-            body: detallesRenovaciones,
-            startY: startY,
-            theme: 'grid',
-            didDrawPage: function (data) {
-                startY = data.cursor.y + 5;  // Ajustar la posición Y después de la tabla
-            }
-        });
-    }
-
-    // ** Título para Gastos **
-    doc.setFontSize(12);
-    doc.text('Gastos:', 10, startY + 10);
-    startY += 15; // Ajustar la posición después del título
-
-    // Detalles de gastos
-    const detallesGastos = [];
-    const gastosInputs = document.querySelectorAll('#gastos input');
-    gastosInputs.forEach((input, index) => {
-        detallesGastos.push([`Gasto ${index + 1}`, input.value]);
-    });
-
-    if (detallesGastos.length > 0) {
-        doc.autoTable({
-            head: [['Gasto', 'Valor']],
-            body: detallesGastos,
-            startY: startY,
-            theme: 'grid',
-            didDrawPage: function (data) {
-                startY = data.cursor.y + 5;  // Ajustar la posición Y después de la tabla
-            }
-        });
-    }
-
-    // Descargar el PDF generado
-    doc.save('reporte_diario_ruta.pdf');
 }

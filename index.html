@@ -4,9 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Reporte de Ruta</title>
+    <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <!-- Hoja de estilos personalizada -->
     <link rel="stylesheet" href="/styles.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script> <!-- Agregar jsPDF -->
+    <!-- jsPDF y plugins -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
 </head>
 <body class="bg-light">
@@ -14,38 +17,52 @@
         <div class="row justify-content-center">
             <div class="col-12 col-md-8 col-lg-6">
                 <div class="card shadow-lg">
-                    <!-- Card Header -->
+                    <!-- Cabecera de la tarjeta -->
                     <div class="card-header text-center bg-gradient-primary text-white py-4">
                         <h2 class="reporte-diario mb-0">Reporte Diario de Ruta</h2>
                     </div>
 
-                    <!-- Total de Caja Inicial -->
-                    <div class="form-group">
-                        <label for="totalCaja">Total de Caja Inicial:</label>
-                        <input type="number" id="totalCaja" class="form-control" step="0.01" placeholder="Ingrese el total de caja inicial" onchange="calcularCajaRestante()">
-                    </div>
-
-                    <!-- Caja Restante -->
-                    <div class="form-group">
-                        <label for="cajaRestante">Caja Restante:</label>
-                        <input type="number" id="cajaRestante" class="form-control" step="0.01" placeholder="Caja restante" readonly>
-                    </div>
-
-                    <!-- Card Body -->
+                    <!-- Cuerpo de la tarjeta -->
                     <div class="card-body">
-                        <form id="formularioReporte">
-                             <!-- Clientes Cancelados -->
-                            <div class="form-group">
-                                <label for="clientesCancelados">Clientes Cancelados:</label>
-                                <input type="number" id="clientesCanceladosInput" class="form-control" max="10" min="0" placeholder="Cantidad de clientes cancelados" onchange="generarCamposClientesCancelados()">
-                            </div>
-                            <div id="clientesCancelados" class="form-group"></div>
+                        <form id="formularioReporte" aria-label="Formulario para generar reporte diario"> 
+                            <!-- Clientes Cancelados -->
+                           <!-- Clientes Cancelados -->
+<div class="form-group">
+    <label for="clientesCanceladosInput">Clientes Cancelados:</label>
+    <input 
+        type="number" 
+        id="clientesCanceladosInput" 
+        class="form-control" 
+        max="10" 
+        min="0" 
+        placeholder="Cantidad de clientes cancelados" 
+        onchange="generarCamposClientesCancelados()" 
+        aria-describedby="clientesCanceladosHelp">
+    <small id="clientesCanceladosHelp" class="form-text text-muted">
+        Introduce un número entre 0 y 10.
+    </small>
+</div>
+<div id="clientesCancelados" class="form-group">
+    <!-- Aquí se generan dinámicamente los campos para cada cliente cancelado -->
+</div>
+
 
                             <!-- Clientes Nuevos -->
                             <h4 class="text-primary">Clientes Nuevos</h4>
                             <div class="form-group">
                                 <label for="numClientesNuevos">Cantidad de Clientes Nuevos:</label>
-                                <input type="number" id="numClientesNuevos" class="form-control" max="10" min="0" placeholder="Ingrese el número de clientes nuevos" onchange="generarCampos('clientesNuevos', 'Cliente Nuevo', 'Monto')">
+                                <input 
+                                    type="number" 
+                                    id="numClientesNuevos" 
+                                    class="form-control" 
+                                    max="10" 
+                                    min="0" 
+                                    placeholder="Ingrese el número de clientes nuevos" 
+                                    onchange="generarCampos('clientesNuevos', 'Cliente Nuevo', 'Monto')" 
+                                    aria-describedby="clientesNuevosHelp">
+                                <small id="clientesNuevosHelp" class="form-text text-muted">
+                                    Introduce un número entre 0 y 10.
+                                </small>
                             </div>
                             <div id="clientesNuevos" class="form-group"></div>
 
@@ -53,66 +70,128 @@
                             <h4 class="text-primary">Renovaciones</h4>
                             <div class="form-group">
                                 <label for="numRenovaciones">Cantidad de Renovaciones:</label>
-                                <input type="number" id="numRenovaciones" class="form-control" max="10" min="0" placeholder="Ingrese el número de renovaciones" onchange="generarCampos('renovaciones', 'Renovación', 'Monto')">
+                                <input 
+                                    type="number" 
+                                    id="numRenovaciones" 
+                                    class="form-control" 
+                                    max="10" 
+                                    min="0" 
+                                    placeholder="Ingrese el número de renovaciones" 
+                                    onchange="generarCampos('renovaciones', 'Renovación', 'Monto')" 
+                                    aria-describedby="renovacionesHelp">
+                                <small id="renovacionesHelp" class="form-text text-muted">
+                                    Introduce un número entre 0 y 10.
+                                </small>
                             </div>
                             <div id="renovaciones" class="form-group"></div>
 
                             <!-- Total Prestado -->
                             <div class="form-group">
                                 <label for="totalPrestado">Total Prestado en la Ruta:</label>
-                                <input type="number" id="totalPrestado" class="form-control" step="0.01" placeholder="Monto total prestado" readonly>
+                                <input 
+                                    type="number" 
+                                    id="totalPrestado" 
+                                    class="form-control" 
+                                    step="0.01" 
+                                    placeholder="Monto total prestado" 
+                                    readonly>
                             </div>
 
                             <!-- Gastos -->
                             <h4 class="text-primary">Gastos</h4>
                             <div class="form-group">
                                 <label for="numGastos">Número de Gastos:</label>
-                                <input type="number" id="numGastos" class="form-control" max="10" min="0" placeholder="Ingrese el número de gastos" onchange="generarCampos('gastos', 'Descripción del Gasto', 'Monto')">
+                                <input 
+                                    type="number" 
+                                    id="numGastos" 
+                                    class="form-control" 
+                                    max="10" 
+                                    min="0" 
+                                    placeholder="Ingrese el número de gastos" 
+                                    onchange="generarCampos('gastos', 'Descripción del Gasto', 'Monto')" 
+                                    aria-describedby="gastosHelp">
+                                <small id="gastosHelp" class="form-text text-muted">
+                                    Introduce un número entre 0 y 10.
+                                </small>
                             </div>
                             <div id="gastos" class="form-group"></div>
 
                             <!-- Total Gastos -->
                             <div class="form-group">
                                 <label for="totalGastos">Total Gastos:</label>
-                                <input type="number" id="totalGastos" class="form-control" step="0.01" placeholder="Total de gastos" readonly>
+                                <input 
+                                    type="number" 
+                                    id="totalGastos" 
+                                    class="form-control" 
+                                    step="0.01" 
+                                    placeholder="Total de gastos" 
+                                    readonly>
                             </div>
 
-                            <!-- Total Clientes -->
+                            <!-- Porcentaje de Gestión -->
+                            <h4 class="text-primary">Porcentaje de Gestión</h4>
                             <div class="form-group">
-                                <label for="totalClientes">Total de Clientes en la Ruta:</label>
-                                <input type="number" id="totalClientes" class="form-control" placeholder="Total de clientes" onchange="calcularPorcentajeGestion()">
+                                <label for="totalClientes">Total de Clientes:</label>
+                                <input 
+                                    type="number" 
+                                    id="totalClientes" 
+                                    class="form-control" 
+                                    placeholder="Ingrese el total de clientes">
                             </div>
-
-                            <!-- Clientes Gestionados -->
                             <div class="form-group">
                                 <label for="clientesGestionados">Clientes Gestionados:</label>
-                                <input type="number" id="clientesGestionados" class="form-control" placeholder="Cantidad de clientes gestionados" onchange="calcularPorcentajeGestion()">
+                                <input 
+                                    type="number" 
+                                    id="clientesGestionados" 
+                                    class="form-control" 
+                                    placeholder="Ingrese los clientes gestionados" 
+                                    oninput="calcularPorcentajeGestion()">
                             </div>
-
-                            <!-- Porcentaje Gestión -->
                             <div class="form-group">
                                 <label for="porcentajeGestion">Porcentaje de Gestión:</label>
-                                <div class="input-group">
-                                    <input type="number" id="porcentajeGestion" class="form-control" placeholder="Porcentaje de gestión" readonly>
-                                    <div class="input-group-append">
-                                        <span class="input-group-text">%</span>
-                                    </div>
-                                </div>
+                                <input 
+                                    type="text" 
+                                    id="porcentajeGestion" 
+                                    class="form-control" 
+                                    readonly 
+                                    placeholder="Porcentaje calculado automáticamente">
                             </div>
 
-                            <!-- Total Recaudado -->
+                            <!-- Otros Campos -->
+                            <!-- Recaudado -->
                             <div class="form-group">
                                 <label for="totalRecaudado">Total Recaudado:</label>
-                                <input type="number" id="totalRecaudado" class="form-control" step="0.01" placeholder="Monto total recaudado">
+                                <input 
+                                    type="number" 
+                                    id="totalRecaudado" 
+                                    class="form-control" 
+                                    step="0.01" 
+                                    placeholder="Monto total recaudado">
                             </div>
 
-                            <!-- Botón para generar y descargar el reporte -->
-                            <button type="button" id="botonGenerarPDF" class="btn btn-primary btn-block" onclick="generarPDF()">Generar y Descargar Reporte</button>
+                            <!-- Caja en Ruta -->
+                            <div class="form-group">
+                                <label for="totalCajaRuta">Total de la Caja en la Ruta:</label>
+                                <input 
+                                    type="number" 
+                                    id="totalCajaRuta" 
+                                    class="form-control" 
+                                    step="0.01" 
+                                    placeholder="Monto total de la caja">
+                            </div>
 
+                            <!-- Botón Generar PDF -->
+                            <button 
+                                type="button" 
+                                id="botonGenerarPDF" 
+                                class="btn btn-primary btn-block" 
+                                onclick="generarPDF()">
+                                Generar y Descargar Reporte
+                            </button>
                         </form>
                     </div>
 
-                    <!-- Card Footer -->
+                    <!-- Pie de la tarjeta -->
                     <div class="card-footer text-center text-muted py-3">
                         Desarrollado por Cristian Ruiz
                     </div>
@@ -121,7 +200,7 @@
         </div>
     </div>
 
-    <!-- Vinculando el archivo JavaScript -->
+    <!-- Archivo JavaScript -->
     <script src="/scripts.js"></script>
 </body>
 </html>
